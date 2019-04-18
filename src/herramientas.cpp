@@ -1,4 +1,5 @@
 #include <herramientas.h>
+#include <limits>
 #include <cmath>
 
 bool FullCompareNotEqual(double v1, double v2) {
@@ -21,4 +22,12 @@ double tiempo_actual() {
     timespec t;
     clock_gettime(CLOCK_REALTIME, &t);
     return t.tv_sec + t.tv_nsec/1000000000.0;
+}
+
+void IgnorarHasta(std::ifstream &is, char delim) {
+    is.ignore(std::numeric_limits<std::streamsize>::max(), delim);
+}
+
+void IgnorarLinea(std::ifstream &is) {
+    IgnorarHasta(is, '\n');
 }

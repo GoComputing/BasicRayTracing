@@ -1,10 +1,23 @@
 #include <cmath>
 #include <geometria.h>
 
+Vector2D::Vector2D(double x, double y) {
+    this->x = x;
+    this->y = y;
+}
+
+
+
 Vector3D::Vector3D(double x, double y, double z) {
     this->x = x;
     this->y = y;
     this->z = z;
+}
+
+Vector3D::Vector3D(const Punto3D &p) {
+    this->x = p.x;
+    this->y = p.y;
+    this->z = p.z;
 }
 
 
@@ -61,6 +74,16 @@ Matriz3x3::Matriz3x3(const Vector3D &fila_1, const Vector3D &fila_2, const Vecto
 
 
 
+Punto2D::Punto2D(const Punto3D &p) {
+    *this = p;
+}
+
+Punto2D& Punto2D::operator=(const Punto3D &p) {
+    this->x = p.x;
+    this->y = p.y;
+    return *this;
+}
+
 Vector3D operator-(const Punto3D &p1, const Punto3D &p2) {
     Vector3D res;
     res.x = p1.x - p2.x;
@@ -74,6 +97,18 @@ Vector2D operator-(const Punto2D &p1, const Punto2D &p2) {
     res.x = p1.x - p2.x;
     res.y = p1.y - p2.y;
     return res;
+}
+
+
+
+
+
+
+Vector3D NormalTriangulo(const Triangulo3D &t) {
+    Vector3D eje_1 = t.vertices[1] - t.vertices[0];
+    Vector3D eje_2 = t.vertices[2] - t.vertices[0];
+    Vector3D res = ProductoVectorial(eje_1, eje_2);
+    return Normalizar(res);
 }
 
 
@@ -273,23 +308,20 @@ void GenerarPlanosSemirecta(const Semirecta3D &semirecta, Plano3D res[2]) {
     }
 }
 
-Punto2D ConvertirA_PlanoXY(const Punto3D &p, const Triangulo3D &plano) {
+Punto3D ConvertirA_PlanoXY(const Punto3D &p, const Triangulo3D &plano) {
     Punto3D origen = plano.vertices[0];
     Vector3D eje_x = plano.vertices[1] - plano.vertices[0];
     Vector3D eje_y = plano.vertices[2] - plano.vertices[0];
     Vector3D eje_z = ProductoVectorial(eje_x, eje_y);
     Matriz3x3 matriz_cambio_base;
     Punto3D res_3D;
-    Punto2D res_2D;
     eje_y = ProductoVectorial(eje_z, eje_x);
     eje_x = Normalizar(eje_x);
     eje_y = Normalizar(eje_y);
     eje_z = Normalizar(eje_z);
     matriz_cambio_base = Matriz3x3(eje_x, eje_y, eje_z);
     res_3D = MultiplicarMatrizPorVector(matriz_cambio_base, p - origen);
-    res_2D.x = res_3D.x;
-    res_2D.y = res_3D.y;
-    return res_2D;
+    return res_3D;
 }
 
 Triangulo2D ConvertirA_PlanoXY(const Triangulo3D &t) {
@@ -481,6 +513,15 @@ bool Triangulo2D_ContienePunto(const Triangulo2D &t, const Punto2D &p) {
         res = angulo_p >= 0 && angulo_p >= angulo_restriccion;
     }
     return res;
+}
+
+bool Triangulo3D_ContienePunto(const Triangulo3D &t, const Punto3D &p) {
+    Triangulo2D t_2D = ConvertirA_PlanoXY(t);
+    Punto3D p_3D = ConvertirA_PlanoXY(p, t);
+    bool resultado = false;
+    if(std::fabs(p_3D.z) <= EPSILON)
+        resultado = Triangulo2D_ContienePunto(t_2D, p_3D);
+    return resultado;
 }
 
 double AreaTriangulo(const Triangulo3D &t) {

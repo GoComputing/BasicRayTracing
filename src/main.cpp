@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
     }
     
     // Variables referentes al resultado
-    constexpr int TAM_X = 512;
-    constexpr int TAM_Y = 512;
+    constexpr int TAM_X = 2048;
+    constexpr int TAM_Y = 2048;
     std::string ruta_carpeta_salida = std::string(argv[1]) + "/";
     unsigned int max_frames = std::atoi(argv[2]);
     std::vector<unsigned char> buffer;
@@ -77,6 +77,9 @@ int main(int argc, char *argv[]) {
             // Para que la imagen no salga volteada, restamos TAM_Y-1 al valor original
             nfil = TAM_Y-1 - (i*num_procesos+id_proceso)/TAM_X;
             ncol = (i*num_procesos+id_proceso)%TAM_X;
+            if(i%1000 == 0 && id_proceso == 0) {
+                std::cout << (100.0*(double)i/(double)buffer.size()) << std::endl;
+            }
             buffer[i] = escena.GenerarPixel(ncol, nfil, nframe).r * 255;
         }
         

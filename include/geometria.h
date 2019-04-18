@@ -4,9 +4,14 @@
 #include <iostream>
 #include <herramientas.h>
 
+struct Punto3D;
+
 struct Vector2D {
     double x;
     double y;
+    
+    Vector2D() = default;
+    Vector2D(double x, double y);
 };
 
 struct Vector3D {
@@ -16,6 +21,7 @@ struct Vector3D {
     
     Vector3D() = default;
     Vector3D(double x, double y, double z);
+    Vector3D(const Punto3D &p);
 };
 
 struct Punto2D {
@@ -24,6 +30,9 @@ struct Punto2D {
     
     Punto2D() = default;
     Punto2D(double x, double y);
+    Punto2D(const Punto3D &p);
+    
+    Punto2D& operator=(const Punto3D &p);
 };
 
 struct Punto3D {
@@ -73,7 +82,11 @@ Vector3D operator-(const Punto3D &p1, const Punto3D &p2);
 Vector2D operator-(const Punto2D &p1, const Punto2D &p2);
 
 
-    
+
+Vector3D NormalTriangulo(const Triangulo3D &t);
+
+
+
 Vector3D ProductoVectorial(const Vector3D &v1, const Vector3D &v2);
 double MultiplicarFilaPorVector(const double fila[3], const Vector3D &v);
 Vector3D MultiplicarMatrizPorVector(const Matriz3x3 &m, const Vector3D &v);
@@ -91,7 +104,7 @@ Vector3D SumarVectores(const Vector3D &v1, const Vector3D &v2);
 Plano3D GenerarPlano(const Vector3D &v1, const Vector3D &v2, const Punto3D &referencia);
 Plano3D GenerarPlanoTriangulo(const Triangulo3D &t);
 void GenerarPlanosSemirecta(const Semirecta3D &semirecta, Plano3D res[2]);
-Punto2D ConvertirA_PlanoXY(const Punto3D &p, const Triangulo3D &plano);
+Punto3D ConvertirA_PlanoXY(const Punto3D &p, const Triangulo3D &plano);
 Triangulo2D ConvertirA_PlanoXY(const Triangulo3D &t);
 
 
@@ -113,6 +126,7 @@ Punto3D CalcularInterseccion(const Semirecta3D &semirecta, const Triangulo3D &tr
 Punto3D ResolverEcuacion(const Plano3D &p1, const Plano3D &p2, const Plano3D &p3);
 double Grados(double radianes);
 bool Triangulo2D_ContienePunto(const Triangulo2D &t, const Punto2D &p);
+bool Triangulo3D_ContienePunto(const Triangulo3D &t, const Punto3D &p);
 double AreaTriangulo(const Triangulo3D &t);
 
 

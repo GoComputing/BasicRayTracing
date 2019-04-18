@@ -13,9 +13,9 @@ RES = res
 
 # ************************* Variables de compilación ************************* #
 CL = mpicxx
-CLFLAGS =
+CLFLAGS = -O3
 CXX = mpicxx
-CXXFLAGS = -I$(INC) -Wall -Wextra -pedantic -c -g
+CXXFLAGS = -I$(INC) -Wall -Wextra -pedantic -c -g -O3
 DEBUGGER = valgrind
 DEBUGGER_FLAGS = 
 EXECUTER = mpirun
@@ -33,7 +33,7 @@ MODULOS += $(OBJ)/escena.o
 
 
 # ******************************** Parámetros ******************************** #
-PARAMETROS = $(RES)/PGM 2
+PARAMETROS = $(RES)/PGM 1
 
 
 # **************************** Reglas por defecto **************************** #
